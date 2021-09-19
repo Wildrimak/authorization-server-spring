@@ -35,6 +35,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         		.secret(passwordEncoder.encode("wdk123"))
         		.authorizedGrantTypes("password")
         		.scopes("write", "read")
+        	.and() // Um client para o resource server não precisar conhecer/depender dos meus clients atuais
+                	.withClient("resource-server-check-token")
+        		.secret(passwordEncoder.encode("rsct-123"))
         ;
     
     }
