@@ -3,6 +3,7 @@ package br.com.wildrimak.authorizationserverspring.core.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -19,6 +20,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     
     @Autowired
     private AuthenticationManager authenticationManager;
+    
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -27,9 +31,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		.inMemory()
         		.withClient("wildrimak-web")
         		.secret(passwordEncoder.encode("wdk123"))
-        		.authorizedGrantTypes("password")
+        		.authorizedGrantTypes("password", "refresh_token")
         		.scopes("write", "read")
-        		.accessTokenValiditySeconds(300)
+        		.accessTokenValiditySeconds(20)
+        		.refreshTokenValiditySeconds(60)
         	.and()
                 	.withClient("wildrimak-mobile")
         		.secret(passwordEncoder.encode("wdk123"))
@@ -44,7 +49,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     
     @Override // Somente o fluxo password flow precisa disso
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
-        endpoints.authenticationManager(authenticationManager);
+        endpoints.authenticationManager(authenticationManager)
+        .userDetailsService(userDetailsService)
+        .reuseRefreshTokens(false); // com isso o client só pode acionar o refresh token uma única vez
     }
     
     @Override
