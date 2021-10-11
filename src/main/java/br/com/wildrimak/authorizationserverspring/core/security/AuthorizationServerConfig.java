@@ -36,13 +36,18 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         		.accessTokenValiditySeconds(20)
         		.refreshTokenValiditySeconds(60)
         	.and()
-                	.withClient("wildrimak-mobile")
+                .withClient("wildrimak-mobile")
         		.secret(passwordEncoder.encode("wdk123"))
         		.authorizedGrantTypes("password")
         		.scopes("write", "read")
         	.and() // Um client para o resource server não precisar conhecer/depender dos meus clients atuais
-                	.withClient("resource-server-check-token")
+                .withClient("resource-server-check-token")
         		.secret(passwordEncoder.encode("rsct-123"))
+        	.and()
+        		.withClient("minibank")
+        		.secret(passwordEncoder.encode("wildribank"))
+        		.authorizedGrantTypes("client_credentials")
+        		.scopes("write", "read")
         ;
     
     }
