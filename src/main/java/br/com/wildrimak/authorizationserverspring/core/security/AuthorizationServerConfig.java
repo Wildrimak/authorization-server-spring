@@ -48,6 +48,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         		.secret(passwordEncoder.encode("wildribank"))
         		.authorizedGrantTypes("client_credentials")
         		.scopes("write", "read")
+    		.and()
+        		.withClient("exemplo-authorization-code")
+        		.secret(passwordEncoder.encode("supersenha"))
+        		.authorizedGrantTypes("authorization_code")
+        		.scopes("write", "read")
+        		.redirectUris("http://exemplo-aplicacao-client")
         ;
     
     }
